@@ -19,7 +19,6 @@ function JokeList() {
 
   async function getJokes() {
     try {
-      localStorage.removeItem("jokes");
       let newJokes = [];
       let seenJokes = new Set();
 
@@ -59,6 +58,12 @@ function JokeList() {
     localStorage.setItem("jokes", JSON.stringify(updatedJokes));
   }
 
+  function resetVotes() {
+    const resettedJokes = jokes.map(j => ({ ...j, votes: 0 }));
+    setJokes(resettedJokes);
+    localStorage.setItem("jokes", JSON.stringify(resettedJokes));
+  }
+
   if (isLoading) {
     return (
       <div className="loading">
@@ -67,13 +72,15 @@ function JokeList() {
     );
   }
 
-  // Sort jokes based on votes before rendering
   const sortedJokes = jokes.slice().sort((a, b) => b.votes - a.votes);
 
   return (
     <div className="JokeList">
       <button className="JokeList-getmore" onClick={generateNewJokes}>
         Get New Jokes
+      </button>
+      <button className="JokeList-reset" onClick={resetVotes}>
+        Reset Votes
       </button>
 
       {sortedJokes.map(j => (
